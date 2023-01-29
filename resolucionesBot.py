@@ -15,7 +15,7 @@ def procesarMensaje():
     for jsonData in jsonDatas:
         date =jsonData['date'].split("T")[0]
         modified =jsonData['modified'].split("T")[0]
-        today = datetime.datetime.today()#(2022,12,23)  #.today()
+        today = datetime.datetime.today()
         today = today.strftime("%Y-%M-%d")
 
         if(today < modified):
