@@ -33,7 +33,7 @@ def procesarMensaje():
     if viejo:
         requests.post(url, data = {
             'chat_id': id_admin,
-            'text' : f'{today}\n\nWeb No Actualizada'
+            'text' : f'{today}\n\nResoluciones No Actualizada'
         })
 
 
