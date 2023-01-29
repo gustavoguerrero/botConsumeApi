@@ -1,8 +1,9 @@
 import datetime
 import requests
 import json
-from cfg import TOKEN
+from cfg import TOKEN, id_admin
 
+url = f'https://api.telegram.org/bot{TOKEN}/sendMessage'
 api = requests.get(
     'http://affur.org.uy/wp-json/wp/v2/posts'
     )
@@ -26,17 +27,23 @@ def procesarMensaje():
             excerpt = f'{excerpt}...'
             link = jsonData['link']
 
-            return f'Publicado por @affur_bot\n{title}\n\n{excerpt}\n\nLeer más: {link}'
+            return f'Publicado por @affur_bot\n\n{title}\n\n{excerpt}\n\nLeer más: {link}'
         else:
             viejo = True
         
     if viejo:
-        print("\n###  no hay publicaciones actuales ###")
+        requests.post(url, data = {
+            'chat_id': id_admin,
+            'text' : f'{today}\n\nWeb No Actualizada'
+        })
+
+
+def sendMessage(message):
+    
+    requests.post(url,data = {
+        'chat_id': '@affur_uy',
+        'text' : message
+    })
 
 message = procesarMensaje()
-
-url = f'https://api.telegram.org/bot{TOKEN}/sendMessage'
-
-requests.post(url,data= {'chat_id': '@affur_uy','text' : message})
-
-
+sendMessage(message)
