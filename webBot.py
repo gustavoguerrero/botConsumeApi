@@ -1,4 +1,4 @@
-import datetime
+from datetime import date, datetime
 import requests
 import json
 from cfg import TOKEN, id_admin
@@ -15,12 +15,18 @@ def procesarMensaje():
     
     for jsonData in jsonDatas:
         viejo = False
-        date =jsonData['date'].split("T")[0]
-        modified =jsonData['modified'].split("T")[0]
-        today = datetime.datetime.today()
-        today = today.strftime("%Y-%M-%d")
 
-        if(today < modified):
+        fecha = jsonData['date'].split("T")[0]
+        fecha = datetime.strptime(fecha, '%Y-%m-%d').date()
+        
+
+        modified = jsonData['modified'].split("T")[0]
+        modified = datetime.strptime(modified, '%Y-%m-%d').date()
+        
+
+        now = date.today()
+
+        if(now == fecha):
             title = jsonData['title']['rendered']
             excerpt = jsonData['excerpt']['rendered']
             excerpt = excerpt.split('>')[1].split('&')[0]
@@ -34,7 +40,7 @@ def procesarMensaje():
     if viejo:
         requests.post(url, data = {
             'chat_id': id_admin,
-            'text' : f'{today}\n\nWeb No Actualizada'
+            'text' : f'{now}\n\nWeb No Actualizada'
         })
 
 
