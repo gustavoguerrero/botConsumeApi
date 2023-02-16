@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import requests
 import json
 from cfg import TOKEN, id_admin
@@ -16,17 +16,22 @@ def procesarMensaje():
     for jsonData in jsonDatas:
         viejo = False
 
-        fecha = jsonData['date'].split("T")[0]
-        fecha = datetime.strptime(fecha, '%Y-%m-%d').date()
+        fecha = jsonData['date'].replace("T", " ")
+        fecha = datetime.strptime(fecha, '%Y-%m-%d %H:%M:%S')
         
 
-        modified = jsonData['modified'].split("T")[0]
-        modified = datetime.strptime(modified, '%Y-%m-%d').date()
+        modified = jsonData['modified'].replace("T", " ")
+        modified = datetime.strptime(modified, '%Y-%m-%d %H:%M:%S')
         
 
-        now = date.today()
+        now = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+        now = datetime.strptime(now, '%Y-%m-%d %H:%M:%S')
 
-        if(now == fecha):
+        yesterday = datetime.today() - timedelta(days=1)
+        yesterday = yesterday.strftime('%Y-%m-%d %H:%M:%S')
+        yesterday = datetime.strptime(yesterday, '%Y-%m-%d %H:%M:%S')
+
+        if(fecha >= yesterday and fecha <= now):
             title = jsonData['title']['rendered']
             excerpt = jsonData['excerpt']['rendered']
             excerpt = excerpt.split('>')[1].split('&')[0]
