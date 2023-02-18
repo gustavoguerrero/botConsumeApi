@@ -16,11 +16,11 @@ def procesarMensaje():
     for jsonData in jsonDatas:
         viejo = False
 
-        fecha = jsonData['date'].replace("T", " ")
+        fecha = jsonData['date_gmt'].replace("T", " ")
         fecha = datetime.strptime(fecha, '%Y-%m-%d %H:%M:%S')
         
 
-        modified = jsonData['modified'].replace("T", " ")
+        modified = jsonData['modified_gmt'].replace("T", " ")
         modified = datetime.strptime(modified, '%Y-%m-%d %H:%M:%S')
         
 
