@@ -1,7 +1,7 @@
 from datetime import date, datetime, timedelta
 import requests
 import json
-from cfg import TOKEN, id_admin
+from cfg import *
 
 url = f'https://api.telegram.org/bot{TOKEN}/sendMessage'
 api = requests.get(
@@ -52,7 +52,7 @@ def procesarMensaje():
 def sendMessage(message):
     
     requests.post(url,data = {
-        'chat_id': '@affur_uy',
+        'chat_id': id_channel,
         'text' : message
     })
 
