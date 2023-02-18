@@ -5,7 +5,7 @@ from cfg import TOKEN, id_admin
 
 url = f'https://api.telegram.org/bot{TOKEN}/sendMessage'
 api = requests.get(
-    'http://affur.org.uy/wp-json/wp/v2/posts'
+    'http://resoluciones.affur.org.uy/wp-json/wp/v2/posts'
     )
 
 jsonDatas = json.loads(api.content)
