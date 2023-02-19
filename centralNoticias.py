@@ -7,11 +7,9 @@ from cfg import *
 
 
 url = f'https://api.telegram.org/bot{TOKEN}/sendMessage'
-urlp = 'https://www.pitcnt.uy/novedades/noticias'
 
 def parsearURL(urlp):
 
-    constURL = 'https://www.pitcnt.uy'
     page = requests.get(urlp)
     soup = BeautifulSoup(page.content, "html.parser")
     items = soup.find_all("div", class_="catItemView")
@@ -22,7 +20,7 @@ def parsearURL(urlp):
         now = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
         now = datetime.strptime(now, '%Y-%m-%d %H:%M:%S')
 
-        yesterday = datetime.today() - timedelta(days=1)
+        yesterday = datetime.today() - timedelta(days=3)
         yesterday = yesterday.strftime('%Y-%m-%d %H:%M:%S')
         yesterday = datetime.strptime(yesterday, '%Y-%m-%d %H:%M:%S')
 
@@ -38,7 +36,7 @@ def parsearURL(urlp):
         if (fecha >= yesterday and fecha <=now):
 
             title = item.a.text.strip()
-            link = constURL + item.find_all("a")[0]["href"]
+            link = centralURL + item.find_all("a")[0]["href"]
             excerpt = item.find_all("div", class_="catItemIntroText")[0].text.strip()
              
             sendMessage(f'Publicado por @affur_bot\nTomado de la web del PIT-CNT\n\n{link}')
@@ -58,5 +56,5 @@ def sendMessage(message):
         'text' : message
     })
 
-parsearURL(urlp)
+parsearURL(scrapyURL)
 
