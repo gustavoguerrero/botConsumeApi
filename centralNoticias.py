@@ -20,7 +20,7 @@ def parsearURL(urlp):
         now = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
         now = datetime.strptime(now, '%Y-%m-%d %H:%M:%S')
 
-        yesterday = datetime.today() - timedelta(days=3)
+        yesterday = datetime.today() - timedelta(days=1)
         yesterday = yesterday.strftime('%Y-%m-%d %H:%M:%S')
         yesterday = datetime.strptime(yesterday, '%Y-%m-%d %H:%M:%S')
 
