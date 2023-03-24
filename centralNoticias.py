@@ -6,6 +6,7 @@ from utils import Utils
 from cfg import *
 
 
+
 url = f'https://api.telegram.org/bot{TOKEN}/sendMessage'
 
 def parsearURL(urlp):
@@ -15,8 +16,7 @@ def parsearURL(urlp):
     items = soup.find_all("div", class_="catItemView")
 
     for item in items:
-        viejo = False
-        
+        viejo = False   
         now = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
         now = datetime.strptime(now, '%Y-%m-%d %H:%M:%S')
 
@@ -26,23 +26,26 @@ def parsearURL(urlp):
 
         try:
             date = item.find_all("span", class_="catItemDateModified")[0].text.split(",")[1].strip()
+            
+            month = date.split()[1].lower()
+            monthNumber = Utils.monthTranslate(month)
+
+            fecha = f'{date.split()[2]}-{monthNumber}-{date.split()[0]} {date.split()[3]}'
+            fecha = datetime.strptime(fecha, '%Y-%m-%d %H:%M')
+            if (fecha >= yesterday and fecha <=now):
+
+                title = item.a.text.strip()
+                link = centralURL + item.find_all("a")[0]["href"]
+                excerpt = item.find_all("div", class_="catItemIntroText")[0].text.strip()
+                
+                sendMessage(f'Publicado por @affur_bot\nTomado de la web del PIT-CNT\n\n{link}')
+                time.sleep(15)
+            else:
+                viejo = True
+            
         except IndexError:
             pass
-        month = date.split()[1].lower()
-        monthNumber = Utils.monthTranslate(month)
-
-        fecha = f'{date.split()[2]}-{monthNumber}-{date.split()[0]} {date.split()[3]}'
-        fecha = datetime.strptime(fecha, '%Y-%m-%d %H:%M')
-        if (fecha >= yesterday and fecha <=now):
-
-            title = item.a.text.strip()
-            link = centralURL + item.find_all("a")[0]["href"]
-            excerpt = item.find_all("div", class_="catItemIntroText")[0].text.strip()
-             
-            sendMessage(f'Publicado por @affur_bot\nTomado de la web del PIT-CNT\n\n{link}')
-            time.sleep(15)
-        else:
-            viejo = True
+        
     
     if viejo:
         requests.post(url, data = {

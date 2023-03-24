@@ -1,6 +1,2 @@
-datetime
-requests
-json
-bs4
-time
-datetime
+requests==2.27.1
+bs4==0.0.1
