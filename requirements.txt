@@ -1,2 +1,7 @@
 requests==2.27.1
 bs4==0.0.1
+Scrapy==2.8.0
+lxml==4.9.2
+parsel==1.7.0
+w3lib==2.1.1
+Twisted==22.10.0
