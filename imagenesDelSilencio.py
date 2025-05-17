@@ -2,46 +2,48 @@ import scrapy
 import os
 from scrapy.http import Request
 from urllib import request
-from cfg import imagenesSilencio as startUrl
+from cfg import headers
 
 
 class QuotesSpider(scrapy.Spider):
     name = 'quotes'
-    start_urls = startUrl
+    start_urls = ['https://imagenesdelsilencio.uy/memoria/']
+
+    async def start(self):
+        for url in self.start_urls:
+            yield Request(url=url, callback=self.parse,
+                           headers=headers)
+
 
     def parse(self, response):
-        for quote in response.xpath('//main/a'):
+        for quote in response.xpath("//span[text()=' Ver Cartel']/ancestor::a"):
             pos = quote.xpath('./@href').get()
-            link = f'{self.start_urls[0]}/{pos}'
-            yield Request(link, callback=self.parse_imagenes, meta={
-                                                            "link":link
-                                                            })
+            link = f'{pos}'
+            yield Request(link, callback=self.parse_imagenes, meta={"link":link},
+                          headers=headers)
 
     def parse_imagenes(self, response):
 
         link = response.meta.get('link')
-        preUrlFoto = response.xpath('//div[@class="Page_downloadContainer__i0CzX"]/a[2]/@href').get()
-        name = preUrlFoto.split("/")[-1].split(".")[0]
+        name = link.split("/")[-1].split(".")[0]
         
-        preUrlFoto = preUrlFoto.replace(" ", "%20")
-        print(f'\n######PRE URL FOTO {preUrlFoto}######')
-        nombreFoto = preUrlFoto.split('/media/')[1]
-        print(f'\n######NOMBRE FOTO {nombreFoto}######')
-        urlFoto = self.start_urls[0] + preUrlFoto
+        print(f'\n######URL FOTO {link}######')
+        print(f'\n######NOMBRE {name}######')
         
-        
-        print(f'\n######URL FOTO {urlFoto}######')
         try:
             os.makedirs('carpeta')
         except FileExistsError:
             pass
-        ruta = os.path.join('/home/veodoble/Documentos/workplace/Python/Scrapy/carpeta/', nombreFoto)
+        ruta = f'/home/veodoble/Documentos/workplace/botConsumeApi/carpeta/{name}.pdf'
         
-        request.urlretrieve(urlFoto, ruta)
+        try:
+            request.urlretrieve(link, ruta)
+            print(f"\nArchivo descargado exitosamente")
+            print(f'\n\n###### RUTA {ruta}######')
+        except Exception as e:
+            print(f"\n##### Error al descargar el archivo: {e}")
 
         yield {
             'name':name,
             'link': link,
-            'nombreFoto': nombreFoto,
-            'urlFoto': urlFoto
         }
